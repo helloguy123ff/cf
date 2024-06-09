@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21Chan</title>
+  <style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.categories a {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin: 10px;
+    border-radius: 5px;
+    flex: 1 1 calc(20% - 40px);
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.categories a:hover {
+    background-color: #0056b3;
+}
+
+#postsContainer {
+    margin: 20px;
+}
+
+.post {
+    background-color: #fff;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 80%;
+    text-align: left;
+}
+
+.post img {
+    max-width: 100%;
+    height: auto;
+}
+
+form {
+    margin: 20px;
+}
+
+form input, form textarea {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+    <h1>21Chan</h1>
+    <div class="categories">
+        <a href="categoria.html?categoria=livros">Livros</a>
+        <a href="categoria.html?categoria=mangas">Mangás</a>
+        <a href="categoria.html?categoria=animes">Animes</a>
+        <a href="categoria.html?categoria=jogos">Jogos</a>
+        <a href="categoria.html?categoria=tecnologia">Tecnologia</a>
+        <a href="categoria.html?categoria=musica">Música</a>
+        <a href="categoria.html?categoria=filmes">Filmes</a>
+        <a href="categoria.html?categoria=series">Séries</a>
+        <a href="categoria.html?categoria=arte">Arte</a>
+        <a href="categoria.html?categoria=esportes">Esportes</a>
+        <a href="categoria.html?categoria=culinaria">Culinária</a>
+        <a href="categoria.html?categoria=viagem">Viagem</a>
+        <a href="categoria.html?categoria=ciencia">Ciência</a>
+        <a href="categoria.html?categoria=historia">História</a>
+        <a href="categoria.html?categoria=moda">Moda</a>
+        <a href="categoria.html?categoria=beleza">Beleza</a>
+        <a href="categoria.html?categoria=animais">Animais</a>
+        <a href="categoria.html?categoria=saude">Saúde</a>
+        <a href="categoria.html?categoria=fitness">Fitness</a>
+        <a href="categoria.html?categoria=memes">Memes</a>
+        <a href="categoria.html?categoria=programacao">Programação</a>
+        <a href="categoria.html?categoria=financas">Finanças</a>
+        <a href="categoria.html?categoria=politica">Política</a>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoria = urlParams.get('categoria');
+
+    if (categoria) {
+        document.getElementById('categoriaTitulo').innerText = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+        carregarPosts(categoria);
+    }
+
+    document.getElementById('novoPostForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        criarNovoPost(categoria);
+    });
+});
+
+function carregarPosts(categoria) {
+    let postsContainer = document.getElementById('postsContainer');
+    let posts = JSON.parse(localStorage.getItem(categoria)) || [];
+    postsContainer.innerHTML = '';
+    posts.forEach(post => {
+        let postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `
+            <h3>${post.titulo}</h3>
+            <p>${post.conteudo}</p>
+            <img src="${post.imagem}" alt="Imagem do post">
+        `;
+        postsContainer.appendChild(postElement);
+    });
+}
+
+function criarNovoPost(categoria) {
+    let titulo = document.getElementById('titulo').value;
+    let conteudo = document.getElementById('conteudo').value;
+    let imagemInput = document.getElementById('imagem');
+    let imagem = URL.createObjectURL(imagemInput.files[0]);
+
+    let posts = JSON.parse(localStorage.getItem(categoria)) || [];
+    posts.push({ titulo, conteudo, imagem });
+    localStorage.setItem(categoria, JSON.stringify(posts));
+
+    carregarPosts(categoria);
+    document.getElementById('novoPostForm').reset();
+}
+
+    </script>
+</body>
+</html>
