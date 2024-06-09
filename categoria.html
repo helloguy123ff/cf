@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21Chan - Categoria</title>
+  <style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.categories a {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin: 0 10px;
+    border-radius: 5px;
+}
+
+.categories a:hover {
+    background-color: #0056b3;
+}
+
+#postsContainer {
+    margin: 20px;
+}
+
+.post {
+    background-color: #fff;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 80%;
+    text-align: left;
+}
+
+.post img {
+    max-width: 100%;
+    height: auto;
+}
+
+form {
+    margin: 20px;
+}
+
+form input, form textarea {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+    <h1 id="categoriaTitulo">Categoria</h1>
+    <div id="postsContainer"></div>
+    <h2>Criar Novo Tópico</h2>
+    <form id="novoPostForm">
+        <input type="text" id="titulo" placeholder="Título" required>
+        <textarea id="conteudo" placeholder="Conteúdo" required></textarea>
+        <input type="file" id="imagem" accept="image/*" required>
+        <button type="submit">Postar</button>
+    </form>
+    <script>document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoria = urlParams.get('categoria');
+
+    if (categoria) {
+        document.getElementById('categoriaTitulo').innerText = categoria.charAt(0).toUpperCase() + categoria.slice(1);
+        carregarPosts(categoria);
+    }
+
+    document.getElementById('novoPostForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        criarNovoPost(categoria);
+    });
+});
+
+function carregarPosts(categoria) {
+    let postsContainer = document.getElementById('postsContainer');
+    let posts = JSON.parse(localStorage.getItem(categoria)) || [];
+    postsContainer.innerHTML = '';
+    posts.forEach(post => {
+        let postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `
+            <h3>${post.titulo}</h3>
+            <p>${post.conteudo}</p>
+            <img src="${post.imagem}" alt="Imagem do post">
+        `;
+        postsContainer.appendChild(postElement);
+    });
+}
+
+function criarNovoPost(categoria) {
+    let titulo = document.getElementById('titulo').value;
+    let conteudo = document.getElementById('conteudo').value;
+    let imagemInput = document.getElementById('imagem');
+    let imagem = URL.createObjectURL(imagemInput.files[0]);
+
+    let posts = JSON.parse(localStorage.getItem(categoria)) || [];
+    posts.push({ titulo, conteudo, imagem });
+    localStorage.setItem(categoria, JSON.stringify(posts));
+
+    carregarPosts(categoria);
+    document.getElementById('novoPostForm').reset();
+}
+</script>
+</body>
+</html>
